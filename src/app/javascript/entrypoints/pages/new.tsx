@@ -4,7 +4,7 @@ import Editor from "../components/Editor";
 
 const root = document.getElementById("solid-root");
 
-const element = () => <div>
+const element = () => <div class="flex items-center justify-center ">
   <Editor />
 </div>
 

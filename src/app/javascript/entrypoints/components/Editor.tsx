@@ -21,68 +21,92 @@ const Editor: React.FC = () => {
   const [draggedTrack, setDraggedTrack] = createSignal<Track | null>(null);
   const [resizingTrack, setResizingTrack] = createSignal<Track | null>(null);
   const [resizeDirection, setResizeDirection] = createSignal<"left" | "right" | null>(null);
+  const [mouseX, setMouseX] = createSignal<number | null>(null);
+  const [targetX, setTargetX] = createSignal<number | null>(null);
 
   const handleMouseMove = (event: MouseEvent) => {
-    if (draggedTrack()) {
-      const updatedTracks = tracks().map((track) =>
-        track.id === draggedTrack()!.id
-          ? {
-              ...track,
-              position: Math.min(
-                Math.max(0, track.position + event.movementX),
-                editorWidth - (track.end - track.start) // Ensure the track stays within bounds
-              ),
-            }
-          : track
-      );
-      setTracks(updatedTracks);
-    } else if (resizingTrack()) {
-      const updatedTracks = tracks().map((track) => {
-        if (track.id === resizingTrack()!.id) {
-          if (resizeDirection() === "right") {
-            const newEnd = Math.max(
-              track.start,
-              Math.min(
-                track.start + track.maxLength,
-                track.end + event.movementX
-              )
-            );
-            return { ...track, end: newEnd };
-          } else if (resizeDirection() === "left") {
-            const newStart = Math.min(
-              track.end,
-              Math.max(
-                0,
-                track.start + event.movementX
-              )
-            );
-            return { ...track, start: newStart };
-          }
-        }
-        return track;
-      });
-      setTracks(updatedTracks);
+    if (draggedTrack() !== null) {
+      moveTrack(draggedTrack() as Track, event)
+      return
+    }
+    if (resizingTrack()) {
+      resizeTrack(resizingTrack() as Track, event)
     }
   };
+
+  const moveTrack = (track: Track, event: MouseEvent) => {
+    if (mouseX() === null) {
+      setMouseX(event.clientX)
+    }
+    const mouseMoved = event.clientX - (mouseX() ?? event.clientX);
+    if (targetX() === null) {
+      setTargetX(track.position)
+    }
+    const updatedTracks = tracks().map((track) =>
+      track.id === draggedTrack()!.id
+        ? {
+            ...track,
+            position: Math.min(
+              Math.max(0, targetX() as number + mouseMoved),
+              editorWidth - (track.end - track.start) // Ensure the track stays within bounds
+            ),
+          }
+        : track
+    );
+    setTracks(updatedTracks);
+  }
+
+  const resizeTrack = (track: Track, event: MouseEvent) => {
+    if (mouseX() === null) {
+      setMouseX(event.clientX)
+    }
+    const mouseMoved = event.clientX - (mouseX() ?? event.clientX);
+    if (targetX() === null) {
+      setTargetX(resizeDirection() === "right" ? track.end : track.start)
+    }
+    const updatedTracks = tracks().map((track) => {
+      if (track.id !== resizingTrack()!.id) {
+        return track;
+      }
+      if (resizeDirection() === "right") {
+        const newEnd = Math.max(
+          track.start,
+          Math.min(
+            track.start + track.maxLength,
+            targetX() as number + mouseMoved
+          )
+        );
+        return { ...track, end: newEnd };
+      }
+      if (resizeDirection() === "left") {
+        const newStart = Math.min(
+          track.end,
+          Math.max(
+            0,
+            targetX() as number + mouseMoved
+          )
+        );
+        return { ...track, start: newStart };
+      }
+      return track;
+    });
+    setTracks(updatedTracks);
+  }
 
   const handleMouseUp = () => {
     setDraggedTrack(null);
     setResizingTrack(null);
     setResizeDirection(null);
-  };
-
-  const handleMouseLeave = () => {
-    setDraggedTrack(null);
-    setResizingTrack(null);
-    setResizeDirection(null);
+    setMouseX(null);
+    setTargetX(null);
   };
 
   return (
-    <div
+    <div>
+      <div
       class="relative w-[800px] h-[150px] border border-gray-300 overflow-hidden"
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseLeave}
     >
       {tracks().map((track) => (
         <TrackComponent
@@ -95,6 +119,8 @@ const Editor: React.FC = () => {
           }}
         />
       ))}
+    </div>
+    {targetX()} & {mouseX()}
     </div>
   );
 };
