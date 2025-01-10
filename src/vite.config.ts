@@ -4,9 +4,12 @@ import solidPlugin from 'vite-plugin-solid';
 
 export default defineConfig({
   server: {
+    host: "0.0.0.0",
     hmr: {
-        host: "localhost",
-        protocol: "ws",
+      host: "localhost", // Host to connect to from the browser
+      protocol: "ws",
+      port: 3036,
+      clientPort: 3036,
     },
   },
   plugins: [

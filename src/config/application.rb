@@ -23,5 +23,6 @@ module App
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    config.action_cable.allowed_request_origins = ['http://localhost:3036', 'http://myapp:3036']
   end
 end

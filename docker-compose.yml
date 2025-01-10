@@ -11,6 +11,7 @@ services:
     image: docker.io/bitnami/rails:8
     ports:
       - '3000:3000'
+      - '3036:3036'
     environment:
       - DATABASE_HOST=mariadb
       - DATABASE_NAME=my_app_development
