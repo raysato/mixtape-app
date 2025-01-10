@@ -4,4 +4,5 @@ export type Track = {
   maxLength: number;
   start: number;
   end: number;
+  title: string;
 };

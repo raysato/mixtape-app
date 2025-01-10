@@ -1,5 +1,6 @@
-import { createSignal } from "solid-js";
+import { Accessor, Component, createSignal, Signal } from "solid-js";
 import TrackComponent from "./TrackComponent";
+import AudioFile from "../types/AudioFile";
 
 type Track = {
   id: number;
@@ -9,13 +10,11 @@ type Track = {
   end: number; // End offset relative to the base position
   title: string;
 };
-
-const Editor: React.FC = () => {
-  const [tracks, setTracks] = createSignal<Track[]>([
-    { id: 1, position: 50, maxLength: 200, start: 0, end: 100, title: "Track 1" },
-    { id: 2, position: 200, maxLength: 300, start: 50, end: 150, title: "Track 2" },
-  ]);
-
+const TapeEditor: Component<{
+  trackSignal: Signal<Track[]>
+  files: Accessor<AudioFile[]>
+}> = (props) => {
+  const [tracks, setTracks] = props.trackSignal
   const editorWidth = 800; // Width of the editor in pixels
 
   const [draggedTrack, setDraggedTrack] = createSignal<Track | null>(null);
@@ -47,7 +46,7 @@ const Editor: React.FC = () => {
         ? {
             ...track,
             position: Math.min(
-              Math.max(0, targetX() as number + mouseMoved),
+              Math.max(0 - track.start, targetX() as number + mouseMoved),
               editorWidth - (track.end - track.start) // Ensure the track stays within bounds
             ),
           }
@@ -101,12 +100,17 @@ const Editor: React.FC = () => {
     setTargetX(null);
   };
 
+  const handleRightClick = () => {
+
+  }
+
   return (
     <div>
       <div
       class="relative w-[800px] h-[150px] border border-gray-300 overflow-hidden"
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
+      onContextMenu={handleRightClick}
     >
       {tracks().map((track) => (
         <TrackComponent
@@ -125,4 +129,4 @@ const Editor: React.FC = () => {
   );
 };
 
-export default Editor;
+export default TapeEditor;

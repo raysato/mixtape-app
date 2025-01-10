@@ -458,6 +458,18 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.29.1.tgz#c82f04a09ba481e13857d6f2516e072aaa51b7f4"
   integrity sha512-+10CMg9vt1MoHj6x1pxyjPSMjHTIlqs8/tBztXvPAx24SKs9jwVnKqHJumlH/IzhaPUaj3T6T6wfZr8okdXaIg==
 
+"@soorria/solid-dropzone@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@soorria/solid-dropzone/-/solid-dropzone-1.0.1.tgz#f8f66df8968a7e965fea6ddbed92650631341b3f"
+  integrity sha512-xQ6qkn3IK3IgAz7yyx+AgfmnCnRHkBTqQGjTcS64FDN7YnnvpZB//0rZjJKl5xwG9bGcJ3oyJAHnv2NK/KNSZA==
+  dependencies:
+    file-selector "^0.6.0"
+
+"@thisbeyond/solid-dnd@^0.7.5":
+  version "0.7.5"
+  resolved "https://registry.yarnpkg.com/@thisbeyond/solid-dnd/-/solid-dnd-0.7.5.tgz#c7585511bc83b5b973315f956296431124b6562c"
+  integrity sha512-DfI5ff+yYGpK9M21LhYwIPlbP2msKxN2ARwuu6GF8tT1GgNVDTI8VCQvH4TJFoVApP9d44izmAcTh/iTCH2UUw==
+
 "@types/babel__core@^7.20.4":
   version "7.20.5"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.20.5.tgz#3df15f27ba85319caa07ba08d0721889bb39c017"
@@ -790,6 +802,13 @@ fastq@^1.6.0:
   integrity sha512-QKHXPW0hD8g4UET03SdOdunzSouc9N4AuHdsX8XNcTsuz+yYFILVNIX4l9yHABMhiEI9Db0JTTIpu0wB+Y1QQw==
   dependencies:
     reusify "^1.0.4"
+
+file-selector@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/file-selector/-/file-selector-0.6.0.tgz#fa0a8d9007b829504db4d07dd4de0310b65287dc"
+  integrity sha512-QlZ5yJC0VxHxQQsQhXvBaC7VRJ2uaxTf+Tfpu4Z/OcVQJVpZO+DGU0rkoVW5ce2SccxugvpBJoMvUs59iILYdw==
+  dependencies:
+    tslib "^2.4.0"
 
 fill-range@^7.1.1:
   version "7.1.1"
@@ -1397,6 +1416,11 @@ ts-interface-checker@^0.1.9:
   version "0.1.13"
   resolved "https://registry.yarnpkg.com/ts-interface-checker/-/ts-interface-checker-0.1.13.tgz#784fd3d679722bc103b1b4b8030bcddb5db2a699"
   integrity sha512-Y/arvbn+rrz3JCKl9C4kVNfTfSm2/mEp5FSz5EsZSANGPSlQrpRI5M4PKF+mJnE52jOO90PnPSc3Ur3bTQw0gA==
+
+tslib@^2.4.0:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.8.1.tgz#612efe4ed235d567e8aba5f2a5fab70280ade83f"
+  integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
 
 typescript@^5.7.2:
   version "5.7.2"
