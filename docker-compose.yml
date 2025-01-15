@@ -19,3 +19,12 @@ services:
       - './src:/app'
     depends_on:
       - mariadb
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    ports:
+      - '8080:80'
+    environment:
+      - PMA_HOST=mariadb
+      - PMA_USER=root
+    depends_on:
+      - mariadb

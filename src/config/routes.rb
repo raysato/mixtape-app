@@ -14,4 +14,5 @@ Rails.application.routes.draw do
 
   get '/' => "page#index"
   get '/new' => "page#new"
+  resources :resources, only: [:create]
 end
