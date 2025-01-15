@@ -2,6 +2,9 @@ import { Accessor, Component, createSignal, Show, Signal } from "solid-js";
 import TrackComponent from "./TrackComponent";
 import AudioFile from "../types/AudioFile";
 
+const trackMaxDurationSec = 23 * 60; 
+const editorLengthPx = 800
+
 type Track = {
   id: number;
   position: number; // Base position of the track
@@ -37,6 +40,7 @@ const TapeEditor: Component<{
   };
 
   const moveTrack = (track: Track, event: MouseEvent) => {
+    console.log(track.title)
     if (mouseX() === null) {
       setMouseX(event.clientX)
     }
@@ -110,10 +114,20 @@ const TapeEditor: Component<{
     setMouseX(event.layerX)
   }
 
-  const handleAddTrackMenu = (event: MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
-    setShowMenu(1)
+  const handleAddTrack = (audioFile: AudioFile) => {
+    const maxLength = editorLengthPx / trackMaxDurationSec * audioFile.duration
+    setTracks([
+      ...tracks(),
+      {
+        id: tracks().length,
+        position: mouseX() ?? 0,
+        maxLength,
+        start: 0,
+        end: maxLength,
+        title: audioFile.file.name
+
+      }
+    ])
   }
 
   return (
@@ -133,29 +147,40 @@ const TapeEditor: Component<{
               setResizingTrack(track);
               setResizeDirection(direction);
             }}
+            onContextMenu
           />
         ))}
         <Show when={showMenu() !== null}>
           <div class="absolute w-36 h-48 card" style={{
             left: `${mouseX()}px`,
-            top: `${30}px`,
+            top: `${10}px`,
           }}>
-            <Show when={showMenu() === 1}>
-              <ul class="menu dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow">
-                <li class="group"><a class="group-hover:active" onclick={handleAddTrackMenu}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
-                  <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
-                </svg>
-                Add track here</a></li>
-              </ul>
-            </Show>
-            <Show when={showMenu() === 0}>
-              <ul class="menu dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow">
-                {files().map((fileElement, i) => (
-                  <li class="group"><a class="group-hover:active">{fileElement.file.name}</a></li>
-                ))}
-              </ul>
-            </Show>
+            <ul class="menu dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow">
+              <li>
+                <a class="hover:active" onmouseover={() => setShowMenu(1)}>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
+                    <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
+                  </svg>
+                  Add track here
+                </a>
+              </li>
+              <Show when={showMenu() === 1}>
+                <li onmouseover={() => setShowMenu(1)} >
+                  <ul>
+                  <Show when={showMenu() === 1 && files().length > 0}>
+                    {files().map((fileElement, i) => (
+                      <li><a class="group-hover:active" onmousedown={() => handleAddTrack(fileElement)}>{fileElement.file.name}</a></li>
+                    ))}
+                  </Show>
+                  <Show when={showMenu() === 1 && files().length === 0}>
+                    <li>No files uploaded</li>
+                  </Show>
+                  </ul>
+                </li>
+              </Show>
+              
+            </ul>
+            
           </div>
         </Show>
       </div>
