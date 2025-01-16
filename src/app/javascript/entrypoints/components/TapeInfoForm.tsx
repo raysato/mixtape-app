@@ -44,8 +44,9 @@ const TapeInfoForm: Component<{
           </Show>
         </div>
       </div>
-      <div class="grid gap-4 w-full">
+      <div class="grid gap-2 w-full">
         <input onchange={(event) => setTapeInfo({...tapeInfoForm(), title: event.target.value})} type="text" placeholder="Tape Name" class="input input-bordered w-full max-w-xs input-lg" />
+        <input onchange={(event) => setTapeInfo({...tapeInfoForm(), customURL: event.target.value})} type="text" placeholder="Custom URL" class="input input-bordered w-full max-w-xs" />
         <textarea onchange={(event) => setTapeInfo({...tapeInfoForm(), description: event.target.value})} class="textarea textarea-bordered" placeholder="Description"></textarea>
       </div>
     </div>
