@@ -1,18 +1,11 @@
 import { Accessor, Component, createSignal, Show, Signal } from "solid-js";
 import TrackComponent from "./TrackComponent";
 import AudioFile from "../types/AudioFile";
+import { Track } from "../types/Track";
 
 const trackMaxDurationSec = 23 * 60; 
 const editorLengthPx = 800
 
-type Track = {
-  id: number;
-  position: number; // Base position of the track
-  maxLength: number; // Maximum allowable length between start and end
-  start: number; // Start offset relative to the base position
-  end: number; // End offset relative to the base position
-  title: string;
-};
 const TapeEditor: Component<{
   trackSignal: Signal<Track[]>
   files: Accessor<AudioFile[]>
@@ -124,8 +117,8 @@ const TapeEditor: Component<{
         maxLength,
         start: 0,
         end: maxLength,
-        title: audioFile.file.name
-
+        title: audioFile.file.name,
+        file: audioFile
       }
     ])
   }

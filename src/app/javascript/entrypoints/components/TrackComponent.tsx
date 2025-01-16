@@ -1,13 +1,5 @@
 import { Component } from "solid-js";
-
-type Track = {
-  id: number;
-  position: number; // Base position of the track
-  maxLength: number; // Maximum allowable length between start and end
-  start: number; // Start offset relative to the base position
-  end: number; // End offset relative to the base position
-  title: string;
-};
+import { Track } from "../types/Track";
 
 type TrackComponentProps = {
   track: Track;
