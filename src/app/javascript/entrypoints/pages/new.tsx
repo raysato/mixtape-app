@@ -16,7 +16,7 @@ const element = () => {
   const filesSignal = createSignal<AudioFile[]>([]);
   const trackSignal = createSignal<Track[]>([]);
   const [tracks] = trackSignal
-  const tapeInfoSignal = createSignal<TapeInfo>({title: "", description: "", customURL: "", thumbnailImage: null});
+  const tapeInfoSignal = createSignal<TapeInfo>({title: "", description: "", customURL: "", password: "",thumbnailImage: null});
   const [statusMsg, setStatusMsg] = createSignal("");
   const [tapeInfo] = tapeInfoSignal
   const [progress, setProgress] = createSignal(0);
