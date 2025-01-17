@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_16_091951) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_16_115321) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -41,6 +41,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_16_091951) do
 
   create_table "resources", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
     t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "tapes", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.string "uuid"
+    t.string "password"
+    t.integer "resource_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "tracks", charset: "utf8mb4", collation: "utf8mb4_general_ci", force: :cascade do |t|
+    t.string "name"
+    t.integer "play_at"
+    t.integer "start_at"
+    t.integer "end_at"
+    t.string "title"
+    t.integer "resource_id"
+    t.integer "tape_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
