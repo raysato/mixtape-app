@@ -2,12 +2,15 @@ import { render } from "solid-js/web";
 import "/app/app/assets/stylesheets/application.css";
 import TapeEditor from "../components/TapeEditor";
 import TrackControllerComponent from "../components/TrackControllerComponent";
-import { createSignal } from "solid-js";
+import { createEffect, createSignal, Show } from "solid-js";
 import { Track } from "../types/Track";
 import AudioFile from "../types/AudioFile";
 import TapeInfo from "../types/TapeInfo";
 import TapeInfoForm from "../components/TapeInfoForm";
 import { useFetch } from "../libs/CSRFFetch";
+import TapeCreateRequest from "../types/TapeCreateRequest";
+import { TAPE_EDITOR_LENGTH_PX, TAPE_MAX_LENGTH_MIN } from "../consts/const";
+import PlayableTrack from "../types/PlayableTrack";
 
 const root = document.getElementById("solid-root");
 const API_ENDPOINT = '/resources'
@@ -15,11 +18,29 @@ const API_ENDPOINT = '/resources'
 const element = () => {
   const filesSignal = createSignal<AudioFile[]>([]);
   const trackSignal = createSignal<Track[]>([]);
-  const [tracks] = trackSignal
+  const [tracks, setTracks] = trackSignal
   const tapeInfoSignal = createSignal<TapeInfo>({title: "", description: "", customURL: "", password: "",thumbnailImage: null});
   const [statusMsg, setStatusMsg] = createSignal("");
   const [tapeInfo] = tapeInfoSignal
   const [progress, setProgress] = createSignal(0);
+  const [playableTrackData, setPlayableTrackData] = createSignal<PlayableTrack[]>([]);
+  const [btnStatus, setBtnStatus] = createSignal(0)
+  const [createdTapeUUID, setCreatedTapeUUID] = createSignal<number | null>(null)
+  createEffect(() => {
+    const newPlayableTrackData: PlayableTrack[] = tracks().map(track => {
+      const pxPositionToMiliSeconds = TAPE_MAX_LENGTH_MIN * 60 * 100 / TAPE_EDITOR_LENGTH_PX
+      
+      return {
+        name: track.title,
+        play_at: track.position * pxPositionToMiliSeconds,
+        start_at: track.start * pxPositionToMiliSeconds,
+        end_at: track.end * pxPositionToMiliSeconds,
+        resource_id: track.resource_id
+      }
+    })
+    setPlayableTrackData(newPlayableTrackData)
+    console.log('updating track', newPlayableTrackData)
+  });
   let modalRef: HTMLDialogElement | undefined;
 
   const showProgressAsMsg = (num: number) => {
@@ -81,20 +102,11 @@ const element = () => {
     }
     try {
       const results = await Promise.all(uploadPromises);
+      return results;
     } catch (error) {
       setStatusMsg('File upload failed')
-      return
+      throw new Error()
     }
-    
-  }
-
-  const submit = () => {
-    if (checkTapeInfo() !== true) {
-      alert(checkTapeInfo())
-      return
-    }
-    modalRef?.showModal()
-    uploadFiles()
   }
 
   const checkTapeInfo = () => {
@@ -105,6 +117,52 @@ const element = () => {
       return 'At least one track must be included in a mixtape'
     }
     return true;
+  }
+
+  const uploadTape = async (requestData: TapeCreateRequest) => {
+    const response = await useFetch('/tapes', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
+    });
+    if (!response.ok) {
+      // Handle HTTP errors
+      const errorResponse = await response.json();
+      console.error("Error creating tape:", errorResponse);
+      return errorResponse;
+    }
+    return await response.json()
+  }
+
+  const submit = async () => {
+    if (checkTapeInfo() !== true) {
+      alert(checkTapeInfo())
+      return
+    }
+    modalRef?.showModal()
+    if (await uploadFiles()) {
+      setStatusMsg('Creating mixtape')
+      setTracks([...tracks()])
+      const requestData: TapeCreateRequest = {
+        name: tapeInfo().title,
+        description: tapeInfo().description,
+        customURL: tapeInfo().customURL,
+        password: tapeInfo().password,
+        thumbnailResourceID: tapeInfo().thumbnailResourceID ?? 0,
+        tracks: playableTrackData()
+      }
+      const response = await uploadTape(requestData)
+      console.log(response.uuid)
+      if (response.error) {
+        setStatusMsg('Provided custom URL already exists')
+        return
+      }
+      addProgress()
+      setStatusMsg('Upload complete! Your mixtape is available')
+      setCreatedTapeUUID(response.uuid)
+    }
   }
 
   return <div class="grid items-center justify-center gap-5">
@@ -124,12 +182,22 @@ const element = () => {
           <p class="">{statusMsg()}</p>
           <progress class="progress progress-info w-full" value={progress()} max={tracks().length + 2}></progress>
         </div>
-        <div class="modal-action">
-          <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
-            <button class="btn">Close</button>
-          </form>
-        </div>
+        <Show when={statusMsg() === 'Provided custom URL already exists'}>
+          <div class="modal-action">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button class="btn">Close</button>
+            </form>
+          </div>
+        </Show>
+        <Show when={createdTapeUUID()}>
+          <div class="modal-action">
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <a class="btn btn-info" target="_blank" rel="noopener noreferrer" href={`/t/${createdTapeUUID()}`}>Go</a>
+            </form>
+          </div>
+        </Show>
       </div>
     </dialog>
   </div>

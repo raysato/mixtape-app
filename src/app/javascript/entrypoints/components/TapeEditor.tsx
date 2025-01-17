@@ -2,9 +2,7 @@ import { Accessor, Component, createSignal, Show, Signal } from "solid-js";
 import TrackComponent from "./TrackComponent";
 import AudioFile from "../types/AudioFile";
 import { Track } from "../types/Track";
-
-const trackMaxDurationSec = 23 * 60; 
-const editorLengthPx = 800
+import { TAPE_EDITOR_LENGTH_PX, TAPE_MAX_LENGTH_MIN } from "../consts/const";
 
 const TapeEditor: Component<{
   trackSignal: Signal<Track[]>
@@ -71,7 +69,7 @@ const TapeEditor: Component<{
         const newEnd = Math.max(
           track.start,
           Math.min(
-            track.start + track.maxLength,
+            track.maxLength,
             targetX() as number + mouseMoved
           )
         );
@@ -108,7 +106,7 @@ const TapeEditor: Component<{
   }
 
   const handleAddTrack = (audioFile: AudioFile) => {
-    const maxLength = editorLengthPx / trackMaxDurationSec * audioFile.duration
+    const maxLength = TAPE_EDITOR_LENGTH_PX / TAPE_MAX_LENGTH_MIN / 60 * audioFile.duration
     setTracks([
       ...tracks(),
       {
@@ -133,14 +131,12 @@ const TapeEditor: Component<{
       >
         {tracks().map((track) => (
           <TrackComponent
-            key={track.id}
             track={track}
             onDragStart={(track) => setDraggedTrack(track)}
             onResizeStart={(track, direction) => {
               setResizingTrack(track);
               setResizeDirection(direction);
             }}
-            onContextMenu
           />
         ))}
         <Show when={showMenu() !== null}>

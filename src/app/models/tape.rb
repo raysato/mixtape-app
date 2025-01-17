@@ -3,6 +3,6 @@ class Tape < ApplicationRecord
     has_many :tracks, dependent: :destroy
   
     validates :uuid, presence: true, uniqueness: true
-    validates :name, :description, :password, presence: true
+    validates :name, presence: true
 end
   

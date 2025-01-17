@@ -2,12 +2,12 @@ class TapesController < ApplicationController
     def create
         # Parse the incoming JSON
         tape_params = params.permit(
-            :name, :description, :uuid, :password, :thumbnailResourceID,
+            :name, :description, :customURL, :password, :thumbnailResourceID,
             tracks: [:name, :play_at, :start_at, :end_at, :resource_id]
         )
 
         # Generate UUID if it's not provided or blank
-        tape_params[:uuid] = generate_uuid(tape_params[:name]) if tape_params[:uuid].blank?
+        tape_params[:customURL] = generate_uuid(tape_params[:name]) if tape_params[:customURL].blank?
 
 
         # Check if a Tape with the given UUID already exists
@@ -20,7 +20,7 @@ class TapesController < ApplicationController
         tape = Tape.new(
             name: tape_params[:name],
             description: tape_params[:description],
-            uuid: tape_params[:uuid],
+            uuid: tape_params[:customURL],
             password: tape_params[:password],
             resource_id: tape_params[:thumbnailResourceID]
         )
