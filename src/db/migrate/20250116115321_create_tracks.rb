@@ -5,7 +5,6 @@ class CreateTracks < ActiveRecord::Migration[8.0]
       t.integer :play_at
       t.integer :start_at
       t.integer :end_at
-      t.string :title
       t.integer :resource_id
       t.integer :tape_id
 

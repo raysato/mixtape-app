@@ -60,7 +60,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_16_115321) do
     t.integer "play_at"
     t.integer "start_at"
     t.integer "end_at"
-    t.string "title"
     t.integer "resource_id"
     t.integer "tape_id"
     t.datetime "created_at", null: false

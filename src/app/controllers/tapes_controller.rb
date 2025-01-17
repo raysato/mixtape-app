@@ -3,7 +3,7 @@ class TapesController < ApplicationController
         # Parse the incoming JSON
         tape_params = params.permit(
             :name, :description, :uuid, :password, :thumbnailResourceID,
-            tracks: [:name, :play_at, :start_at, :end_at, :title, :resource_id]
+            tracks: [:name, :play_at, :start_at, :end_at, :resource_id]
         )
 
         # Generate UUID if it's not provided or blank
@@ -34,7 +34,6 @@ class TapesController < ApplicationController
                 play_at: track_params[:play_at],
                 start_at: track_params[:start_at],
                 end_at: track_params[:end_at],
-                title: track_params[:title],
                 resource_id: track_params[:resource_id]
                 )
             end
