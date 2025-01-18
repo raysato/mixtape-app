@@ -52,5 +52,31 @@ class TapesController < ApplicationController
         raw_string = "#{date_string}-#{name}"
         Digest::MD5.hexdigest(raw_string)
     end
+
+    def show
+        tape = Tape.find_by(uuid: params[:uuid])
+      
+        if tape.nil?
+          render plain: "Tape not found", status: :not_found
+          return
+        end
+      
+        @tape_json = {
+          name: tape.name,
+          description: tape.description,
+          thumbnail_url: tape.resource&.file_url,
+          tracks: tape.tracks.map do |track|
+            {
+              name: track.name,
+              play_at: track.play_at,
+              start_at: track.start_at,
+              end_at: track.end_at,
+              audiofile_url: track.resource&.file_url
+            }
+          end
+        }.to_json
+      
+        render "pages/tape"
+    end
 end
   

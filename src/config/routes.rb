@@ -14,6 +14,7 @@ Rails.application.routes.draw do
 
   get '/' => "page#index"
   get '/new' => "page#new"
+  get '/t/:uuid', to: 'tapes#show', as: 'tape_show'
   resources :resources, only: [:create]
   resources :tapes, only: [:create]
 end
