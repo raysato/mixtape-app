@@ -582,7 +582,7 @@ const CassetteTape: Component<{
             stroke-miterlimit="10"
           />
           {/* Textstart */}
-          <text x="55" y="130" class="font-bold text-6xl">{name}</text>
+          <text x="55" y="130" class="font-bold text-6xl select-none">{name}</text>
           {/* textend */}
           <path
             d="M559.08,72.89h2.11l2.38,4.55.91,2h0c-.09-1-.26-2.24-.26-3.32V72.89h2V82h-2.12l-2.38-4.55-.9-2h-.06c.1,1,.26,2.23.26,3.3V82h-2Z"

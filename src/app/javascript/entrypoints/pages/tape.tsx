@@ -1,7 +1,7 @@
 import { render } from "solid-js/web";
 import ViewableTape from "../types/ViewableTape";
 import CassetteTape from "../components/CassetteTape";
-import { createSignal, Show } from "solid-js";
+import { createEffect, createSignal, Show } from "solid-js";
 import { TAPE_MAX_LENGTH_MIN } from "../consts/const";
 import { TaskRunner } from "../libs/TaskRunner";
 
@@ -31,6 +31,8 @@ const element = () => {
     }
     setTimeMs(timeMs() + 50)
   }
+
+  const timeDisplay = () => `${String(Math.floor(timeMs() / 1000 / 60)).padStart(2, '0')}:${String(Math.floor(timeMs() % (1000 * 60) / 1000)).padStart(2, '0')}`
   return <div class="grid w-full">
     <div class="relative">
       <Show when={playing()}>
@@ -59,7 +61,7 @@ const element = () => {
         </svg>
       </button>
       <div class="w-full pt-1">
-        <input type="range" min="0" max={tapeLengthMs} value={timeMs()} onchange={(event) => setTimeMs(parseInt(event.target.value))} class="range range-primary"/>
+        <input type="range" min="0" max={tapeLengthMs} value={timeMs()} oninput={(event) => setTimeMs(parseInt(event.target.value))} class="range range-primary"/>
         <div class="flex w-full justify-between px-2 text-xs">
           <span>|</span>
           <span>|</span>
@@ -68,6 +70,7 @@ const element = () => {
           <span>|</span>
         </div>
       </div>
+      <p class="pt-1">{timeDisplay()}</p>
     </div>
     <p class="text-center w-full pt-10">{tapeData.description}</p>
   </div>
