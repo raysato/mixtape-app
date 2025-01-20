@@ -28,7 +28,7 @@ const element = () => {
   const [createdTapeUUID, setCreatedTapeUUID] = createSignal<number | null>(null)
   createEffect(() => {
     const newPlayableTrackData: PlayableTrack[] = tracks().map(track => {
-      const pxPositionToMiliSeconds = TAPE_MAX_LENGTH_MIN * 60 * 100 / TAPE_EDITOR_LENGTH_PX
+      const pxPositionToMiliSeconds = TAPE_MAX_LENGTH_MIN * 60 * 1000 / TAPE_EDITOR_LENGTH_PX
       
       return {
         name: track.title,

@@ -14,15 +14,60 @@ const element = () => {
   const [playing, setPlaying] = createSignal(false);
   const [show, setShow] = createSignal(false);
   const [timeMs, setTimeMs] = createSignal(0)
+  let playingTrackIndex: number | null = null
+  let playingAudio: HTMLAudioElement | null = null
+  const [readyToPlay, setReadyToPlay] = createSignal(false);
+
+  const audioOnLoad = () => {
+    setReadyToPlay(true)
+    if (playing()) {
+      attemptPlayTrack()
+    }
+  }
+
+  createEffect(() => {
+    const trackToPlay = tapeData.tracks.findIndex((track) =>  track.play_at + track.start_at <= timeMs() && timeMs() < track.play_at + track.end_at)
+    if (trackToPlay === -1) {
+      playingAudio?.pause();
+      playingAudio = playingTrackIndex = null
+      setReadyToPlay(false)
+      return
+    }
+    if (trackToPlay !== playingTrackIndex) {
+      playingTrackIndex = (trackToPlay)
+      playingAudio = new Audio(tapeData.tracks[trackToPlay].audiofile_url);
+      playingAudio.addEventListener('loadedmetadata', audioOnLoad);
+    }
+  })
+
+  const updateAudioTime = () => {
+    if (playingAudio !== null && playingTrackIndex !== null) {
+      playingAudio.currentTime = (timeMs() - tapeData.tracks[playingTrackIndex].start_at) / 1000
+    }
+  }
+
+  const attemptPlayTrack = () => {
+    if (playingAudio === null) {
+      return
+    }
+    updateAudioTime()
+    runner.start(startTape)
+    playingAudio.play()
+  }
+
   const togglePlaying = () => {
     setPlaying(!playing())
     setShow(true);
     setTimeout(() => setShow(false), 1000);
     if (playing()) {
-      runner.start(startTape)
+      setTimeMs(timeMs() + 1)
+      if (readyToPlay()) {
+        attemptPlayTrack()
+      }
       return
     }
     runner.stop()
+    playingAudio?.pause()
   }
   const startTape = () => {
     if (tapeLengthMs <= timeMs()) {
@@ -46,7 +91,7 @@ const element = () => {
         </svg>
       </Show>
       <div class="flex justify-center">
-        <CassetteTape playing={playing()} onclick={togglePlaying} name={tapeData.name} />
+        <CassetteTape playing={playing() && readyToPlay()} onclick={togglePlaying} name={tapeData.name} />
       </div>
     </div>
     <div class="pt-10 w-[500px] justify-self-center flex gap-2">
@@ -61,7 +106,7 @@ const element = () => {
         </svg>
       </button>
       <div class="w-full pt-1">
-        <input type="range" min="0" max={tapeLengthMs} value={timeMs()} oninput={(event) => setTimeMs(parseInt(event.target.value))} class="range range-primary"/>
+        <input type="range" min="0" max={tapeLengthMs} value={timeMs()} oninput={(event) => setTimeMs(parseInt(event.target.value))} onchange={updateAudioTime} class="range range-primary"/>
         <div class="flex w-full justify-between px-2 text-xs">
           <span>|</span>
           <span>|</span>
