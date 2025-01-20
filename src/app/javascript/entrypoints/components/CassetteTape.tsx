@@ -20,7 +20,7 @@ const CassetteTape: Component<{
     }
   }
   return (
-    <div class="cursor-pointer" onclick={handleClick}>
+    <div class="cursor-pointer shadow-md" onclick={handleClick}>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 810 513.5" class="w-[550px]">
         <g id="Tape">
           <g id={props.playing ? 'Tape1' : ''}>

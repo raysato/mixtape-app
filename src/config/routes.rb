@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  get '/' => "page#index"
+  get '/' => "tapes#index"
   get '/new' => "page#new"
   get '/t/:uuid', to: 'tapes#show', as: 'tape_show'
   resources :resources, only: [:create]
