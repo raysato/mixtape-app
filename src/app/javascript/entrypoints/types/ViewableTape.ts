@@ -1,7 +1,7 @@
 export default interface TapeCreateRequest {
     name: string;
     description: string;
-    thumbnail_url: number; // public url of the tape's corresponding resource model
+    thumbnail_url: string; // public url of the tape's corresponding resource model
     tracks: {
         name: string;
         play_at: number;

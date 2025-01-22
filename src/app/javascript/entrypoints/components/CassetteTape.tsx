@@ -2,15 +2,16 @@
 Design used from:
 https://github.com/SpeedCodeProjects/cassette-animation/blob/main/index.html
 **/
-import { Component, createEffect } from "solid-js";
+import { Component, createEffect, Show } from "solid-js";
 import "/app/app/assets/stylesheets/cassette.css";
 
 const CassetteTape: Component<{
     name: string;
+    thumbnail: string;
     playing: boolean;
     onclick?: () => void
 }> = (props) => {
-  const { playing, name, onclick } = props;
+  const { thumbnail, name, onclick } = props;
   createEffect(() => {
 
   })
@@ -20,7 +21,7 @@ const CassetteTape: Component<{
     }
   }
   return (
-    <div class="cursor-pointer shadow-md" onclick={handleClick}>
+    <div class="cursor-pointer" onclick={handleClick}>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 810 513.5" class="w-[550px]">
         <g id="Tape">
           <g id={props.playing ? 'Tape1' : ''}>
@@ -695,6 +696,10 @@ const CassetteTape: Component<{
           <path
             d="M601.17,333.69c0-7.78,3.26-11.76,8.17-11.76s8.18,4,8.18,11.76-3.26,12-8.18,12S601.17,341.47,601.17,333.69Zm11.34,0c0-6.23-1.38-7.66-3.17-7.66s-3.17,1.43-3.17,7.66,1.39,7.87,3.17,7.87S612.51,339.93,612.51,333.69Z"
           />
+          
+          <Show when={thumbnail !== ""}>
+            <image href={thumbnail} x="55" y="257" class="w-[100px] border-2" />
+          </Show>
         </g>
       </svg>
     </div>
