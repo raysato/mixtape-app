@@ -144,7 +144,7 @@ const TapeEditor: Component<{
             left: `${mouseX()}px`,
             top: `${10}px`,
           }}>
-            <ul class="menu dropdown-content bg-base-300 rounded-box z-[1] w-52 p-2 shadow">
+            <ul class="menu bg-base-300 rounded-box w-52 p-2 shadow">
               <li>
                 <a class="hover:active" onmouseover={() => setShowMenu(1)}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
@@ -155,10 +155,10 @@ const TapeEditor: Component<{
               </li>
               <Show when={showMenu() === 1}>
                 <li onmouseover={() => setShowMenu(1)} >
-                  <ul>
+                  <ul class="max-h-20 overflow-y-auto">
                   <Show when={showMenu() === 1 && files().length > 0}>
                     {files().map((fileElement, i) => (
-                      <li><a class="group-hover:active" onmousedown={() => handleAddTrack(fileElement)}>{fileElement.file.name}</a></li>
+                      <li class=""><a class="group-hover:active w-40 truncate" onmousedown={() => handleAddTrack(fileElement)}>{fileElement.file.name}</a></li>
                     ))}
                   </Show>
                   <Show when={showMenu() === 1 && files().length === 0}>

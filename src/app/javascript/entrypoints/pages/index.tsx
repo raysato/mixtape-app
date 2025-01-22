@@ -1,4 +1,4 @@
-import { render } from "solid-js/web";
+import { render, Show } from "solid-js/web";
 
 const root = document.getElementById("solid-root");
 const tapesData: {
@@ -10,17 +10,19 @@ const currentPage = parseInt(document.getElementById('pagination')?.getAttribute
 const totalPages = parseInt(document.getElementById('pagination')?.getAttribute('data-total-pages') ?? '1');
 
 const element = () => <div class="grid items-center justify-center">
-  <div class="w-full grid grid-cols-4 gap-4 justify-start">
+  <div class="w-full grid grid-cols-4 gap-8 justify-start">
     {tapesData.map(tape => (<div>
       <a href={`t/${tape.uuid}`}>
-        <img src={tape.resource_url} class="h-40 object-cover rounded-lg" />
+        <img src={tape.resource_url ?? '/tape.png'} class="h-40 object-cover rounded-lg border-base-content-400 border-2" />
         <p class="text-xl">{tape.name}</p>
       </a>
     </div>))}
   </div>
-  <div class="join justify-self-center">
-    {Array.from({ length: totalPages }).map((_, index) => <a href={`/?page=${index + 1}`} class={`join-item btn ${currentPage - 1 === index ? 'btn-active' : ''}`}>{index + 1}</a>)}
-  </div>
+  <Show when={totalPages > 1}>
+    <div class="join justify-self-center">
+      {Array.from({ length: totalPages }).map((_, index) => <a href={`/?page=${index + 1}`} class={`join-item btn ${currentPage - 1 === index ? 'btn-active' : ''}`}>{index + 1}</a>)}
+    </div>
+  </Show>
 </div>
 
 if (root !== null) {

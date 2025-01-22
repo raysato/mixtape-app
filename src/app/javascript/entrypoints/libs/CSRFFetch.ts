@@ -1,5 +1,3 @@
-import { stringify } from "postcss";
-
 export const useFetch = (input: RequestInfo | URL, init?: RequestInit) => {
     const tokenElement = document.querySelector('meta[name="csrf-token"]') as unknown as {content: string}
     const token = tokenElement.content

@@ -1,5 +1,44 @@
 class TapesController < ApplicationController
 
+  def create
+    tape_params = params.permit(
+        :name, :description, :customURL, :password, :thumbnailResourceID,
+        tracks: [:name, :play_at, :start_at, :end_at, :resource_id]
+    )
+
+    tape_params[:customURL] = generate_uuid(tape_params[:name]) if tape_params[:customURL].blank?
+
+    if Tape.exists?(uuid: tape_params[:uuid])
+        render json: { error: 'Tape with this UUID already exists' }, status: :bad_request
+        return
+    end
+
+    tape = Tape.new(
+        name: tape_params[:name],
+        description: tape_params[:description],
+        uuid: tape_params[:customURL],
+        password: tape_params[:password],
+        resource_id: tape_params[:thumbnailResourceID]
+    )
+
+    if tape.save
+      if tape_params[:tracks]
+        tape_params[:tracks].each do |track_params|
+          tape.tracks.create(
+          name: track_params[:name],
+          play_at: track_params[:play_at],
+          start_at: track_params[:start_at],
+          end_at: track_params[:end_at],
+          resource_id: track_params[:resource_id]
+        )
+      end
+    end
+        render json: { uuid: tape.uuid }, status: :created
+    else
+        render json: { error: tape.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
     def index
         tapes = Tape.includes(:resource).page(params[:page]).per(20)
         formatted_tapes = tapes.map do |tape|
