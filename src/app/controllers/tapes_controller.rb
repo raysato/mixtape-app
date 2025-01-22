@@ -1,4 +1,5 @@
 class TapesController < ApplicationController
+  before_action :authenticate_with_password, only: [:show]
 
   def create
     tape_params = params.permit(
@@ -40,7 +41,7 @@ class TapesController < ApplicationController
   end
 
     def index
-        tapes = Tape.includes(:resource).page(params[:page]).per(20)
+        tapes = Tape.includes(:resource).where(password: [nil, '']).page(params[:page]).per(20)
         formatted_tapes = tapes.map do |tape|
           {
             name: tape.name,
@@ -87,6 +88,16 @@ class TapesController < ApplicationController
         }.to_json
       
         render "pages/tape"
+    end
+
+    def authenticate_with_password
+      tape = Tape.find_by(uuid: params[:uuid])
+  
+      if tape&.password.present?
+        authenticate_or_request_with_http_basic("Tape Password Required") do |_, password|
+          ActiveSupport::SecurityUtils.secure_compare(password, tape.password)
+        end
+      end
     end
 end
   
