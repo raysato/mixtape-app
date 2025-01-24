@@ -41,7 +41,7 @@ class TapesController < ApplicationController
   end
 
     def index
-        tapes = Tape.includes(:resource).where(password: [nil, '']).page(params[:page]).per(20)
+        tapes = Tape.includes(:resource).where(password: [nil, '']).order(created_at: :desc).page(params[:page]).per(20)
         formatted_tapes = tapes.map do |tape|
           {
             name: tape.name,

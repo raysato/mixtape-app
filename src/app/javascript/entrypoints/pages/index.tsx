@@ -13,7 +13,7 @@ const element = () => <div class="grid items-center justify-center">
   <div class="w-full grid grid-cols-4 gap-8 justify-start">
     {tapesData.map(tape => (<div>
       <a href={`t/${tape.uuid}`}>
-        <img src={tape.resource_url ?? '/tape.png'} class="h-40 object-cover rounded-lg border-base-content-400 border-2" />
+        <img src={tape.resource_url ?? '/tape.png'} class="h-40 w-40 object-cover rounded-lg border-base-content-400 border-2" />
         <p class="text-xl">{tape.name}</p>
       </a>
     </div>))}
